@@ -5,13 +5,14 @@ import uberSelect from '../assets/rides/uberSelect.png';
 import uberXL from '../assets/rides/uberXL.png';
 import Image from 'next/image';
 import ethLogo from '../assets/eth-logo.png';
-import { useEffect, useState } from 'react';
+import { useEffect, useContext, useState } from 'react';
+import { UberContext } from '../context/uberContext';
 
 const style = {
   wrapper: `h-full flex flex-col`,
   title: `text-gray-500 text-center text-xs py-2 border-b`,
   carList: `flex flex-col flex-1 overflow-scroll`,
-  car: `flex p-3 m-2 items-center border02 border-white`,
+  car: `flex p-3 m-2 items-center border-2 border-white`,
   selectedCar: `border-2 border-black flex p-3 m-2 items-center`,
   carImage: `h-14`,
   carDetails: `ml-2 flex-1`,
@@ -25,6 +26,7 @@ const basePrice = 1542;
 
 const RideSelector = () => {
   const [carList, setCarList] = useState([]);
+  const { selectedRide, setSelectedRide, setPrice } = useContext(UberContext);
 
   useEffect(() => {
     (async () => {
@@ -32,6 +34,8 @@ const RideSelector = () => {
         const response = await fetch('/api/db/getRideTypes');
         const data = await response.json();
         setCarList(data.data);
+        console.log(data);
+        setSelectedRide(data.data[0]);
       } catch (error) {
         console.error(error);
       }
@@ -43,7 +47,20 @@ const RideSelector = () => {
       <div className={style.title}>Choose a ride, or swipe up for more</div>
       <div className={style.carList}>
         {carList.map((car, index) => (
-          <div className={style.car} key={index}>
+          <div
+            key={index}
+            className={`${
+              selectedRide.service === car.service
+                ? style.selectedCar
+                : style.car
+            }`}
+            onClick={() => {
+              setSelectedRide(car);
+              // setPrice(
+              //   ((basePrice / 10 ** 5) * car.priceMultiplier).toFixed(5)
+              // );
+            }}
+          >
             <Image
               src={car.iconUrl}
               className={style.carImage}
