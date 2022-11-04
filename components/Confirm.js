@@ -10,8 +10,15 @@ const style = {
 };
 
 const Confirm = () => {
-  const { currentAccount, pickup, dropoff, price, selectedRide } =
-    useContext(UberContext);
+  const {
+    currentAccount,
+    pickup,
+    dropoff,
+    price,
+    selectedRide,
+    pickupCoordinates,
+    dropoffCoordinates
+  } = useContext(UberContext);
   const storeTripDetails = async (pickup, dropoff) => {
     try {
       await fetch('/api/db/saveTrips', {
@@ -35,7 +42,7 @@ const Confirm = () => {
   return (
     <div className={style.wrapper}>
       <div className={style.rideSelectorContainer}>
-        <RideSelector />
+        {pickupCoordinates && dropoffCoordinates && <RideSelector />}
       </div>
       <div className={style.confirmButtonContainer}></div>
       <div className={style.confirmBUttonContainer}>
@@ -43,7 +50,7 @@ const Confirm = () => {
           className={style.confirmButton}
           onClick={() => storeTripDetails(pickup, dropoff)}
         >
-          Confirm UberX
+          Confirm {selectedRide.service || 'UberX'}
         </div>
       </div>
     </div>

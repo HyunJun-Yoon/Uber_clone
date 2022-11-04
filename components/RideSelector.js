@@ -1,8 +1,3 @@
-import uberX from '../assets/rides/uberX.png';
-import uberBlack from '../assets/rides/uberBlack.png';
-import uberBlackSuv from '../assets/rides/uberBlackSuv.png';
-import uberSelect from '../assets/rides/uberSelect.png';
-import uberXL from '../assets/rides/uberXL.png';
 import Image from 'next/image';
 import ethLogo from '../assets/eth-logo.png';
 import { useEffect, useContext, useState } from 'react';
@@ -22,19 +17,20 @@ const style = {
   price: `mr-[-0.8rem]`
 };
 
-const basePrice = 1542;
-
 const RideSelector = () => {
   const [carList, setCarList] = useState([]);
-  const { selectedRide, setSelectedRide, setPrice } = useContext(UberContext);
+  const { selectedRide, setSelectedRide, setPrice, basePrice } =
+    useContext(UberContext);
+
+  console.log(basePrice);
 
   useEffect(() => {
     (async () => {
       try {
         const response = await fetch('/api/db/getRideTypes');
+
         const data = await response.json();
         setCarList(data.data);
-        console.log(data);
         setSelectedRide(data.data[0]);
       } catch (error) {
         console.error(error);
@@ -56,9 +52,9 @@ const RideSelector = () => {
             }`}
             onClick={() => {
               setSelectedRide(car);
-              // setPrice(
-              //   ((basePrice / 10 ** 5) * car.priceMultiplier).toFixed(5)
-              // );
+              setPrice(
+                ((basePrice / 10 ** 5) * car.priceMultiplier).toFixed(5)
+              );
             }}
           >
             <Image
@@ -66,17 +62,17 @@ const RideSelector = () => {
               className={style.carImage}
               height={50}
               width={50}
-              alt='car image'
+              alt='car'
             />
             <div className={style.carDetails}>
               <div className={style.service}>{car.service}</div>
-              <div className={style.time}> 5 min away</div>
+              <div className={style.time}>5 min away</div>
             </div>
             <div className={style.priceContainer}>
               <div className={style.price}>
                 {((basePrice / 10 ** 5) * car.priceMultiplier).toFixed(5)}
               </div>
-              <Image src={ethLogo} height={25} width={40} alt='Eth logo' />
+              <Image src={ethLogo} height={25} width={40} />
             </div>
           </div>
         ))}

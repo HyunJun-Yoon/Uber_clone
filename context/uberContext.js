@@ -12,6 +12,7 @@ export const UberProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState([]);
   const [selectedRide, setSelectedRide] = useState([]);
   const [price, setPrice] = useState();
+  const [basePrice, setBasePrice] = useState();
 
   let metamsk;
 
@@ -27,6 +28,29 @@ export const UberProvider = ({ children }) => {
     if (!currentAccount) return;
     reqeustToGetCurrentUserInfo();
   }, [currentAccount]);
+
+  useEffect(() => {
+    if (!pickupCoordinates || !dropoffCoordinates) return;
+    async () => {
+      try {
+        const response = await fetch('/api/map/getDuration', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            pickupCoordinates: `${pickupCoordinates[0]}, ${pickupCoordinates[1]}`,
+            dropoffCoordinates: `${dropoffCoordinates[0]}, ${dropoffCoordinates[1]}`
+          })
+        });
+
+        const data = await response.json();
+        setBasePrice(Math.round(await data.data));
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  });
 
   const checkIfWalletIsConnected = async () => {
     if (!window.etherum) return;
@@ -153,7 +177,9 @@ export const UberProvider = ({ children }) => {
         selectedRide,
         setSelectedRide,
         price,
-        setPrice
+        setPrice,
+        basePrice,
+        setBasePrice
       }}
     >
       {children}
