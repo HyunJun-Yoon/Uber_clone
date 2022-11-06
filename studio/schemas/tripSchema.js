@@ -9,7 +9,7 @@ export const tripSchema = {
       title: 'Drop off'
     },
     {
-      name: 'prickup',
+      name: 'pickup',
       type: 'string',
       title: 'Pick up'
     },

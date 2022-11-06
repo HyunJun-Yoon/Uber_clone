@@ -14,10 +14,10 @@ export const UberProvider = ({ children }) => {
   const [price, setPrice] = useState();
   const [basePrice, setBasePrice] = useState();
 
-  let metamsk;
+  let metamask;
 
   if (typeof window !== 'undefined') {
-    metamsk = window.ethereum;
+    metamask = window.ethereum;
   }
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export const UberProvider = ({ children }) => {
 
   useEffect(() => {
     if (!pickupCoordinates || !dropoffCoordinates) return;
-    async () => {
+    (async () => {
       try {
         const response = await fetch('/api/map/getDuration', {
           method: 'POST',
@@ -49,8 +49,8 @@ export const UberProvider = ({ children }) => {
       } catch (error) {
         console.log(error);
       }
-    };
-  });
+    })();
+  }, [pickupCoordinates, dropoffCoordinates]);
 
   const checkIfWalletIsConnected = async () => {
     if (!window.etherum) return;
@@ -179,7 +179,8 @@ export const UberProvider = ({ children }) => {
         price,
         setPrice,
         basePrice,
-        setBasePrice
+        setBasePrice,
+        metamask
       }}
     >
       {children}
